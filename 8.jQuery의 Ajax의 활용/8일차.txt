@@ -1,0 +1,182 @@
+8.jQuery의 Ajax의 활용
+
+
+** 이미지 갤러리 불러오기 **
+=====================================================
+$(function () {
+
+    /*
+     * 갤러리
+     */
+	$('#gallery').each(function(){ //이미지를 반복적으로 불러오기
+		//#gallery요소를 객체
+		var $container=$(this);//<ul class="gallery"  id="gallery"><li></li></ul>
+		//형식)$(선택자).masonry(옵션)->그리드 형태로 배치
+		$container.masonry({
+			columnWidth:230, //열의길이(필수지정)
+			gutter:10, //열사이의 좌우간격
+			itemSelector:'.gallery-item' //그리드에 해당하는 요소선택자를 지정(필수)
+		});
+		/*
+		 * {
+             "title": "Bad Boy",
+             "images": {
+                          "thumb": "img/thumb-3-7.jpg",
+                           "large": "img/large-3-7.jpg"
+           }
+		 * 
+		 */
+		//2.이미지를 불러오기->content.json
+		$.getJSON('./data/content.json',function(data){
+			var elements=[];//태그포함한 이미지 문자열 배열 생성  {} //객체표시
+			//반복해서 불러오기 $.each
+			$.each(data,function(i,item){ //i 인덱스번호,item(각 이미지 정보태그)
+				var itemHTML='<li class="gallery-item is-loading">'+
+				                        '<a href="'+item.images.large+'">'+
+				                           '<img src="'+item.images.thumb+
+				                           '" alt="'+item.title+'">'+
+				                        '</a>'+'</li>';
+				//html문자열을 Dom요소->배열에 저장
+				elements.push($(itemHTML).get(0));
+			})
+			//ul태그에 li태그를 추가->부모.append(자식)
+			$container.append(elements)
+			
+			//이미지가 메모리에 다 불러오고나서 길이가 다 다른 이미지->그리드형태
+			//이미지를 다 불러왔으면 is-loading클래스 선택자 해제->화면에 보인다.
+			$container.imagesLoaded(function(){
+				$(elements).removeClass('is-loading');//이미지가 보인다.
+				$container.masonry('appended',elements)//호출할 메서드,추가할 항목
+			})
+		})
+	})
+});
+
+===============================================================
+main.css파일 스타일 적용
+=========================
+
+** Ajax 계통의 함수를 정리 **
+
+01)$.ajax()->가장 기본적인 ajax기능을 가진 함수
+*************************************************************
+02)$.getJSON()->1.json파일만 따로 처리해주는 ajax함수($.ajax)
+              ->2.특정 사이트에 접속->~.json파일형태로 제공
+              ->3.DB에 접속->테이블의 필드를 불러올때
+
+                 테이블태그에 출력->json표기법으로 화면에 출력
+**************************************************************
+============================================================
+http://api.flickr.com/services/feeds/photos_public.gne?
+tags=raccoon&tagmode=any&format=json&jsoncallback=?
+
+   =>06.getJSONsite.html
+========================================================
+03)$.ajax 응용->~.jsp,~.xml.~.json다 된다.
+              ->xml문서를 불러오기=>1)순수 xml문서
+                                    2)jsp형태의 xml문서를 불러올 수 있다.
+04.$.ajax().html
+
+<%@ page language="java" contentType="text/xml; charset=UTF-8"
+    pageEncoding="UTF-8" ======================
+    trimDirectiveWhitespaces="true"%> =>태그사이의 공백을 제거옵션
+    =================================
+<?xml version="1.0" encoding="UTF-8" ?>
+<people>
+  <person>
+      <name>홍길동</name>
+      <job>학생</job>
+      <age>23</age>
+  </person>
+  <person>
+      <name>테스트</name>
+      <job>웹프로그래머</job>
+      <age>21</age>
+  </person>
+  <person>
+      <name>임시</name>
+      <job>직장인</job>
+      <age>34</age>
+  </person>
+</people>
+========================
+05.$.post().html
+
+$(function(){ 
+	  //$.post()->내부적으로 $.ajax()를 실행->post방식으로 서버에 요청
+	  //                서버에서 요청한 문서결과->콜백함수가 받아서 원하는 위치 출력
+	  $('#saveButton').click(function(){
+		  var value=$('#name').val()
+		  $.post('aa.jsp',{name:value,age:34},function(args){
+			  $('#resultDIV').html(args)
+		  })
+	  })//click
+	  $('#clearButton').click(function(){
+		  $('#resultDIV').empty()//내용만 삭제-->태그까지 삭제 (remove())
+	  })
+  })
+================================================================
+07.getBoardJSON.jsp 파일
+
+[
+  {
+    num:1,
+    writer:'홍길동',
+    subject:'~',
+    content:~
+  },
+  {
+    num:2,
+    writer:'홍길동',
+    subject:'~',
+    content:~
+  }
+  ,,,
+]
+03.getJSON().html을 save as 해서
+08.get().html->xml파일
+
+<items>
+             =>태그가 반복->내용이 틀린다
+             ->$.each(~)
+   <item>
+     <id>1</id>
+    <name>레몬</name>
+    <price>3000</price>
+     <description>피로회복에 좋고 비타민C 풍부
+     </description>
+     </item>
+   
+    <item>
+     <id>2</id>
+    <name>키위</name>
+    <price>3000</price>
+     <description>피로회복에 좋고 비타민C 풍부
+     </description>
+     </item>
+======================================
+  <item id="2" name="키위">=>$.each(속성까지 고려)
+    <price>2000</price>
+     <description>비타민C 풍부 다이어트와 미용에 좋다
+     </description>
+   </item>
+==========================================
+09.$.getScript().html->자바스크립트외부파일
+                        ~.js을 불러와서 선언된 함수를
+                         호출해서 실행
+->05.$.post().html을 save as
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

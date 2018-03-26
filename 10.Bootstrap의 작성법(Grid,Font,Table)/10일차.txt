@@ -1,0 +1,231 @@
+10.Bootstrap의 작성법(Grid,Font,Table)
+
+ 2/28일 재시험->오후 5:00(->단답형,서술형)->
+ ->문제풀이,중간점검한 문제(객관식)
+ ----------------------------------->60점
+
+ 3/6---->3/9일(금요일)->jQuery,bootstrap(서술형)
+                         1일차~3/7일까지 시험범위
+         3/8일(팀별 발표)
+ =================================================
+ 3/16(스프링 기초),3/27(스프링 고급)=>합쳐서 한번
+ 3/30(금) 확정   =========================>3/2,3/23
+=================================================
+3:20(3시간) 2팀(1.5시간)
+
+ grid(3).html ->grid(1).html save as
+ <h4 class="text-primary">그리드 사이에 분리가능(오프셋(offset-n))</h4>
+ <h4 class="text-primary">그리드 (오프셋(offset-n))이 12개를 넘으면 다음줄에
+                                            개행</h4>
+
+<div class="row">
+          <div class="col-md-5">col-md-5</div>
+          <div class="col-md-5">col-md-5</div>
+          <div class="col-md-2">col-md-2</div>
+          
+       </div>
+         <div class="row"><!-- 8:4 -->
+           <div class="col-md-8">col-md-8</div>
+          <div class="col-md-3">col-md-3</div>
+         </div>
+---------------------------------------------------------
+grid(3).html save as grid(4)중첩.html
+
+.pad10{  /* 중첩할 그리드의 배경색,테두리색,여백을 설정*/
+                 padding:10px; border-color:blue;background-color:#C0C0C0;
+       }
+------------------------------------------------------------
+  grid(2).html save as grid(5)3단.html
+
+  3단영역의 배너광고때문에 추가
+
+  .banner {  /* 오른쪽 영역에 배너를 걸 목적 */
+                     background-color:rgba(210,201,201,.5);
+                     height:200px;
+                     padding:10px; 
+                     border-radius:10px;
+        }
+---------------------------------------------------------
+
+** css->float속성으로 레이아웃을 변경=> clear:both(다음행)
+
+*** 그리드시스템->클래스 선택자를  ====>col-md-3 ,col-md8 ,col-md-3
+    이용해서 레이아웃을 변경시킨다.
+
+ grid(2).html save as grid(6)(중첩2단).html
+--------------------------------------------
+ grid(2).html save as grid(7)(위치변경).html
+
+   col-md-2(왼쪽)             col-md-10(오른쪽)
+       col-md-push-10        col-md-pull-2
+    (왼쪽 push)                  (오른쪽 pull)
+
+===============================================
+https://www.w3schools.com/bootstrap/default.asp
+===============================================
+ 2.font
+
+타이포그래피->글꼴,단락에 대한 설정
+
+1.부트스트랩의 기본 글꼴 - Helvetica Neue,Helvetica,Arial
+2.전체적인 글꼴 크기 ? 14px
+3.전체의 행간->1.42857443
+4.글꼴 색 ? 진한 회색
+5.배경 색상 ? 흰색
+** 6.직접 부트스트랩의 파일을 편집하는 것보다 따로 설정이 권장 사항
+
+ 기존의 부트스트랩의 설정을 불러오고 나서
+ 덮어쓰는 방법
+----------------------------------------------------------------
+
+<h1>부트스트랩에서의 글꼴설정</h1>
+    <div class="container">
+      <h1>bootstrap h1</h1>
+      <h2>bootstrap h2</h2>
+      <h3>bootstrap h3</h3>
+      
+      <h1>부트스트랩 h1</h1>
+      <h2>부트스트랩 h2</h2>
+      <h3>부트스트랩 h3</h3>
+      
+    </div>
+---------------------------------
+*** 기존의 부트스트랩에서 지원해주는 글꼴대신에 원하는 글꼴설정**
+
+<style>~</style>태그 내부에
+형식) @import url(경로포함해서 불러올 스타일글꼴에 해당되는 파일명)
+1) @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+ 
+2. 외부에서 파일로 작성해서 불러오는 경우(다운로드 받은 파일->로컬위치 지정) 
+ 형식) @font-face {
+      속성명:속성값;
+  }
+===================================>
+폰트다운로드(웹폰트)
+   
+1.웹폰트는 웹 디자이너가 사용자의 컴퓨터에 설치되지 않은 글꼴을 사용 가능
+
+2.웹폰트는 구입한 폰트를 서버에 올려 놓은 후, CSS에 글꼴 파일을 포함시켜
+  놓으면  해당 사이트를 접속하는 사용자의 컴퓨터에 그 폰트가 다운로드 되어
+  보여집니다.
+
+3.웹폰트를 HTML에 포함하려면 CSS3방식의 @font-face 규칙으로 정의
+4.W3C 권장형식  - *.woff
+5.크롬,사파리,파이어 폭스, 오페라,IE9이상 버전에서 *.woff 글꼴 형식을 지원 
+
+
+                                 저작권->이미지 > 폰트(~.eot.woff)
+@font-face{
+  font-family:'NanumGothic';
+  src:url("../fonts/NanumGothic.eot");
+  src:local(""),url("../fonts/NanumGothic.woff") format("woff");
+}
+
+=>불러오는 순서가 중요하다.
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">=>내가 작성한 것
+===================================================================
+
+
+body { font-family: "Helvetica Neue", Helvetica, Arial,"NanumGothic",  sans-serif; }
+
+3.직접 설정하는 방법
+
+body { font-family: "Helvetica Neue", Helvetica, "궁서체","NanumGothic",  sans-serif; }
+
+====================================================================
+3.테이블 태그->회원가입폼, 게시판폼,(테이블)
+
+ 3.table
+     table1.html
+
+    <h4 class="text-primary">테이블 스타일 적용</h4>
+      <p>
+          <small>small태그</small>는 작은글씨를 <strong>strong</strong>은
+          문장을 강조할때 사용,<em>em태그는 이탤릭체를</em> 표시한다. </p>
+     <p>
+          <span class="lead">리드선택자를 이용하여</span>단락의 첫문장 강조
+      </p>
+
+<p>강조클래스(text-muted,text-primary,text-success,text-info,text-warning)
+      <p class="text-left text-success">문장의 긍정(.text-left) 존재</p>
+      <p class="text-center text-info">문장의 정보(.text-center) 존재</p>
+      <p class="text-right text-warning">문장의 경고(.text-right) 존재</p>
+      <p class="text-center text-danger">글자색은 빨강(.text-right) 존재</p>
+=====================================================================
+                      bootstarp.min.js=>bootstarp.css 찾아보기
+ <table class="table">
+        ==============>넓이가 100%인 테이블을 생성
+                       행과 행사이에 border가 적용이 되는 클래스선택자
+
+ table{
+    width:100%
+    border:1px solid red
+ }
+
+<table class="table table-striped">
+                    ==============>테이블의 각행에 색상을 넣어줌
+
+
+ table1.html save as table2.html로 저장
+ ======================================>form
+ <table class="table table-hover">
+        =========================
+
+테이블의 넓이는 100%적용이 되면 테두리는 기본적으로 적용이 된다.
+각행은 마우스를 갖다될때 색깔이 변경이 되는 스타일 시트
+===============================================================
+<!--4.
+       <table class="table table-condensed">
+        각 셀의 padding값이 작아져서 타이트한 느낌(셀과 셀안의 문자열 간격)
+         5.각 행또는 각셀마다 색상을 부여->행에 부여하는 클래스 선택자 존재
+          active(회색), success(연두색),warning(겨자색),danger(빨강색)부여
+
+         -->
+       <h4 class="text-primary">class="table-condensed를 준다"</h4>
+       <table class="table table-condensed">
+          <thead><!-- 타이틀을 설정  -->
+             <tr class="active">
+                 <td>게시물번호</td>
+                 <td>글제목</td>
+                 <td>작성자</td>
+             </tr>
+          </thead>
+              <tr class="success">
+                 <td>1</td>
+                 <td>게시판의 글제목</td>
+                 <td>홍길동</td>
+             </tr>
+             <tr class="warning">
+                 <td>2</td>
+                 <td>게시판의 글제목2</td>
+                 <td>테스트</td>
+             </tr>
+             <tr class="danger">
+                 <td>3</td>
+                 <td>게시판의 글제목3</td>
+                 <td>테스트</td>
+             </tr>
+       </table>
+===================================================
+ table2.html save as table3.html
+
+ <!-- class="table-responsive(브라우저의 길이에 맞춰서 테이블의 크기및
+                                                  내용부분또한 가변적으로 변한다.)"
+                                                  공간이 부족하면 스크롤바가 생성된다. 
+               반응형으로 하길 원하는 테이블의 태그를 
+               <div class="table-responsive"></div> 로 감싸준다.                                  
+                                                  -->
+       <h4 class="text-primary">class="table-responsive를 준다"</h4>
+      <div class="table-responsive">
+       <table class="table">
+          <thead><!-- 타이틀을 설정  -->
+==================================================================
+4.form
+   form1.html
+
+
+
+

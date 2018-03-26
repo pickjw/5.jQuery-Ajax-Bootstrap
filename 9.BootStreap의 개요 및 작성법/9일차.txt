@@ -1,0 +1,252 @@
+9.BootStreap의 개요 및 작성법
+
+ ->개발자에게 필수,디자인 보너스개념
+
+-------------------------------------------------
+주제 발표->모델링 작업->팀원조합->내일까지 모델링
+                        A4제출(각 조별로 팀미팅)
+                      ->3:30시에 수업끝남->A4
+---------------------------------------------------
+5:00 시에 미팅
+
+jQuery,bootstrap=>주가 된다.=>암기 과목
+============================ ==========
+5.ajax
+   |
+    -serialize().html
+
+** 쿼리문자열로 전송해주는 함수 ***
+
+->자동으로 매개변수=전달할값&매개변수2=값2&
+->이렇게 전달하는 문자열을 묶어주는형태->쿼리문자열
+
+seq=1&username=%ED%99%8D%EA%B8%B8%EB%8F%99&password=1234&hobby=music&hobby=yoga&hobby=reading
+                    홍길동(유니코드로 변환)
+
+  form.jsp->
+         String seq=request.getParameter("seq")
+            ,,
+---------------------------------------------------
+  //(2)serializeArray()->json형식의 문자열로 변환->전달
+		  var form_data=$('form').serializeArray();
+		    $.each(form_data,function(index,value){//name속성(키명) value속성(값)
+		    	$('#result').append(value.name+"="+value.value+"<br>")
+		    })
+--------------------------------------------------
+ $(function(){ 
+	  $('#submit').click(function(){
+		  $('#result').empty();//전에 부착된 내용을 새로 지우고 다시 받아오기 위해서
+		   /*
+		   var form_data=$('form').serialize();//쿼리문자열 형태로 전달(포장)
+		    $('#result').text(form_data)
+		    */
+		    //(2)serializeArray()->json형식의 문자열로 변환->전달
+			  var form_data=$('form').serializeArray();
+		    /* 키명:전달한값 형식으로 전달
+			    $.each(form_data,function(index,value){//name속성(키명) value속성(값)
+			    	$('#result').append(value.name+"="+value.value+"<br>")
+			  }) 
+			          {name:value~}=>json표기법형식으로 전달
+			  */
+			  $.post('form.jsp',form_data,function(args){
+				  $('#result').html(args)
+			  })
+	  })
+  })
+</script>
+</head>
+<body>
+<h1>값을 입력(여러개의 값을 입력받아서 전송)회원가입</h1>
+<form>
+  <!-- 
+    $.ajax or $.post=>  {매개변수명:전달할값,매개변수명2:전달할값,,,}
+                           =>serialize() 또는 serializeArray()이용 
+   -->
+   <input type="hidden" name="seq" value="1">
+   <label>이름을 입력하세요:</label>
+   <input type="text" name="username"><br>
+   <label>암호를 입력하세요:</label>
+   <input type="password" name="password"><br>
+   <input type="checkbox" name="hobby" value="music">music
+   <input type="checkbox" name="hobby" value="yoga">yoga
+   <input type="checkbox" name="hobby" value="reading">reading
+   <p>
+   <input type="button" id="submit" value="전송">
+</form>
+<hr>
+<div id="result"></div>
+</body>
+</html>
+===============================================
+bootstrap,mobile(4월말->cordova)
+(웹사이트)+내장(모바일도 같이 디자인)
+
+======================================
+ **** 스프링(backend)(3주),
+      Angular(9일),React(frontend)(6일)(3주)***
+------------------------------------------------
+
+http://bootstrapk.com (한글사이트)
+
+** 개요 **
+
+디자인 스타일 및 액션이 미리 정의된 html,css,js 
+파일로 구성된 프레임 워크
+
+
+면접관->프레임 워크==>미리 개발할것을 다 구축이 되어있는
+                      개발 환경(html5,css3,js(jQuery)
+                                ==========
+
+       자바스크립트 라이브러리->자주 사용,반복구문=>하나의
+                                기능으로 묶어놓은것
+
+       라이브러리가 모여서 하나의 개발환경을 제공(프레임워크)
+       ======================================================
+         프레임워크->bootsrap,Mybatis,Spring,Springtiles
+                     -----------------------------------
+
+** 부트스트랩의 장점 **
+
+1.다양한 스타일이 정의되어있어 디자인이 간편->불러다 사용
+2.CSS클래스명만 바꾸면 쉽게 디자인 적용 및 수정 가능
+3.반응형(모바일)을 고려한 프레임워크->
+                                 *******************************
+                                 반응형 웹사이트(모바일 페이지)
+                                 일반 pc는 기본이면서 모바일까지 같이
+                                 화면 디자인한 웹사이트
+                                 ********************************
+4.무료 오픈 소스(다운로드 간편)
+5.다양한 예시 제공 (초보자도 쉬움)
+
+==================================================================
+** 부트스트랩 단점 **
+
+1.디자인이 정형화 됨=>쇼핑몰에 최적화된 부트스트랩틀
+                    ->이미 만들어진틀을 변경하기가 어렵다.
+                    ->번역->2주이상이 걸린다.
+
+2.심플한 디자인 형태로 국내 정서랑 안맞음->Single Page구성<->Mulit Page
+                                                               국내
+3.구조변경을 위한 프레임워크 수정시 구조
+  파악 어려움(2주이상이 걸리기때문에)=>구조를 빨리 터득하게
+
+4.구 브라우저에 대한 지원이 미흡
+(최소 IE8 이상 되어야 함)
+  =========================================================
+
+        압축풀면
+
+bootstrap/
+├── css/===================>화면디자인에 관련된 css에 관련된 파일
+│   ├── bootstrap.css
+│   ├── bootstrap.css.map
+│   ├── bootstrap.min.css
+│   ├── bootstrap-theme.css
+│   ├── bootstrap-theme.css.map
+│   └── bootstrap-theme.min.css
+├── js/------------------------------>자바스크립트에 관련된 파일
+│   ├── bootstrap.js
+│   └── bootstrap.min.js
+└── fonts/----------------------------->웹상에서 자주 사용이 되는 파일
+    ├── glyphicons-halflings-regular.eot
+    ├── glyphicons-halflings-regular.svg
+    ├── glyphicons-halflings-regular.ttf
+    ├── glyphicons-halflings-regular.woff
+    └── glyphicons-halflings-regular.woff2
+=========================================================
+  메인페이지의 틀을 작성->** 그리드 시스템 **
+
+  ==============================================
+  사이트에서 공부할 것.
+
+  https://www.w3schools.com/bootstrap/default.asp
+  ===============================================
+  bootstrapTest->프로젝트 작성
+  
+  bootstrap.html
+
+ 좋은 소식=>3/2 휴강
+            3/23 휴강
+
+===================================
+ 나쁜 소식=>3/6 부트스트랩->밀어서 
+
+            3/16 스프링기초
+            3/27 스프링활용
+----------------------------------
+
+ *** 그리드(Grid)의 개요 및 특징 ****
+
+개요=>1.부트스트랩의 핵심 레이아웃(화면 디자인)
+특징
+
+2.총 12열로 구성=>(1열씩 12개, 8,4, 4,4,4,6,6)로 레이아웃이 가능
+3.그리드의 합은 항상 12가 되어야 한다. 합이 12를 넘거나 부족하면
+   화면 레이아웃을 구성하는 데 문제가 발생할 수 있다.
+   ->다음줄로 개행
+
+4.클래스 선택자를 기반으로 화면의 레이아웃을 잡아주는 역할
+5.클래스 접두사 분류(화면 크기에 따라서 이렇게 설정)
+
+모바일폰(<768px)=>.col-xs-1~12
+태블릿(>=768px)=>.col-sm-
+데스크탑(>=992px)=>.col-md-  =>pc상태에서의 기준점
+데스크탑(>=1200px)=>.col-lg_
+
+================================================================
+ 1.grid
+   grid(1).html
+   
+<!DOCTYPE html>
+<html lang="ko"><!-- 웹페이지에 한글사용 -->
+  <head>
+    <meta charset="utf-8"><!-- 웹페이지에 한글사용 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--IE최신버전  -->
+    ==================================================
+    <meta name="viewport" content="width=device-width, 
+          initial-scale=1">
+      =>반응형 웹페이지를 적용해주는 부분
+      =>width=device-width->장치의 넓이에 맞춰서 자동으로 
+                            넓이값을 설정해서 넣어달라는 옵션
+                            (pc,phone,tab~)
+      =>initial-scale=1 =>초기의 크기값을 설정하는 옵션
+     =================================================
+    <title>부트스트랩 101 템플릿</title>
+
+    <!-- 부트스트랩 -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+     =>IE 9보다 적으면 html5,css3을 인식할 수 있도록 설정해주라는
+        옵션
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+css/bootstrap-min.css  ==>원본 파일의 스타일은 수정하지 말고
+                          덮어쓸것(주의 사항)
+
+<style>
+  .container{padding-right:30px; /* 수정 할것 */
+             padding-left:30px;
+             margin-right:auto;
+             margin-left:auto}
+
+</style>
+
+.container{padding-right:15px;
+           padding-left:15px;
+           margin-right:auto;
+            margin-left:auto}
+
+@media (min-width:768px){.container{width:750px}}
+
+ grid(1).html =>save as  grid(2).html
+
+
+
+
+
+

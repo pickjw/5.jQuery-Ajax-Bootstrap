@@ -1,0 +1,173 @@
+5.jQuery의 이벤트 종류 및 처리방법
+
+ 3.event
+     03.bind2.html <--01.bind.html을 save as
+
+** jQuery의 이벤트 발생 처리 경우(2가지 차이점) **
+
+1.bind함수를 이용 -->이벤트를 발생했을때 처리해주는 함수를
+                     이벤트별로 여러개를 연결해서 사용
+
+                  <->unbind()=>이벤트 연결을 해제
+
+    $('img').bind('click',function(){
+		  alert('이미지 설명') 
+	 })
+
+2.이벤트 종류에 따라 함수를 지정 실행하는 경우=>예제 정리
+
+  $('이벤트발생 대상자 선택자').이벤트종류(처리할 함수명
+                                            function(){
+ })
+  ===>여러개의 이벤트를 연결할 수 없다.(오직 특정 이벤트만
+                                         처리가 가능)
+
+  //})
+	 //형식  $(이벤트발생 대상자).bind({등록할 이벤트이름:function()익명함수})
+	 $('img:eq(0)').bind({  //<->unbind({해제시킬 이벤트이름:function()익명함수})
+		   mouseout:function(){
+			   $('img:eq(0)').attr('src','../picCats/Persian.jpg')
+		   },
+		   mouseover:function(){
+			   $('img:eq(0)').attr('src','../picCats/RussianBlue.jpg')
+		   },
+           click:function(){
+			   alert('bind함수를 이용한 연결테스트 연습입니다.')
+		   }
+	    })	 
+==========================================================
+   04.remove.html
+   05.event.html
+
+//이미지를 더블클릭->두배로 확대되는 예제
+	 $(function(){ 
+	  //이미지를 더블클릭->두배로 확대되는 예제
+	  //이벤트를 한번만 실행시키고 두번째 이벤트를 발생->자동적으로 해제되는 함수
+	  //형식) $(이벤트 대상자).one('이벤트 종류명',한번만 실행시킬 함수명 or 익명함수)
+	  $('img').bind('dblclick',function(event){
+		//  $('img').dblclick(function(event){
+		 //$('img').one('dblclick',function(event){
+		  //event객체->마우스의 좌표(x,y),이미지의 가로,세로
+		  var $target=$(event.target) //이미지객체의 정보저장
+		  //var $target=$(this)
+		  alert($target.width()+","+$target.height())
+		  $target.width($target.width()*2)//기존의값에다 *2
+		  //$변수명-->jQuery객체를 의미한다.  
+		  //var target(일반변수)=값,  var $target(객체)=값
+		  // int x=3                          Integer x=new Integer(3)
+          //$(event.target)->이벤트를 발생시킨 객체를 의미(예약어)->$(this)
+          //형식)$(이벤트발생 대상자).unbind('해제시킬 이벤트종류명')
+          //~.unbind()->전부 해제(등록된 이벤트 종류)
+          $target.unbind()
+	  })
+  })
+==========================================================
+  06.hover.html
+  
+  //mouseover이벤트<->mouseout이벤트 발생을 번갈아 가면서 호출함수(hover)
+	  //형식)$(이벤트 발생대상자).hover(1.mouseover시 처리할 함수명(익명),
+	  //                                                 2.mouseout시 처리할 함수명(익명))
+	  $('h1').hover(function(){  //mouseover이벤트 발생
+		  $(this).addClass('reverse')
+	  },function(){                   //mouseout이벤트 발생
+		  $(this).removeClass('reverse')
+	  })
+
+=====================================================
+   07.keyup.html->실시간 검색시 필요->onkeyup=>입력시
+
+   $(function(){ 
+	  //1.사용자가 글자를 입력했을때 발생->keyUp 이벤트
+	  $('input').keyup(function(){
+		  var value=$(this).val()
+		  report(value)
+	  })
+	  //2.reset버튼을 클릭->input의 내용을 지우고 커서 입력
+	  $('button').click(function(){
+		 $('input').val('')
+		 $('input').focus()
+	  })
+	  //3.사용자정의 함수->div태그에 입력받은 값을 넣어주는 기능함수 작성
+	  function report(msg){
+		  //1)html(태그포함 문자열만) 2) text(문자열만)  3)val()->입력받은 양식
+		  $('#console').text(msg)//<->$('#console').text()
+	  }
+  })
+------------------------------------------------------
+  08.change.html ->콤보박스에서 발생
+  ---------------
+  $(function(){ 
+	  $('#sel').change(function(event){
+		  //select태그의 option의 value값을 불러오는 코딩
+		  //var imgSrc=$(this).val()
+		  var imgSrc=$(event.target).val()
+		  //alert(imgSrc)
+		  $('img').attr('src',imgSrc)
+	  })
+  })
+------------------------------------------------------
+   09.input.html(회원가입폼)
+      input.js(jQuery로 구성된 자바스크립트 파일)
+======================================================
+   4.advance
+
+        01->슬라이드쇼
+         css->** main.css
+                 normalize.css(html5,css적용)
+                               ->브라우저에 상관없이 
+                                 기본적인 태그의 환경설정
+                                 (스타일)
+         img->이미지
+         js
+           vender->jQuery파일을 다운로드
+                   ==============================
+                   jquery-ui-1.10.3.custom.min.js
+                   ->effect효과를 다양하게 적용
+                   ===============================
+                   jquery-3.2.1.min.js
+                          1.10.2.min.js
+                   애니매이션처리해주는 함수의 effect효과
+                   1~2개 정도
+
+           ** main.js =>jQuery를 이용->화면디자인
+
+         ** index.html =>실행파일(화면디자인)
+=================================================
+<meta charset="UTF-8"> =>한글처리
+
+<html class="no-js" lang="ko">
+
+html요소->class="no-js"
+
+jQuery코딩->실제 브라우저에서 적용X
+ 브라우저 환경설정-->자바스크립트를 지원X (옵션)
+
+=>http://webdir.tistory.com/82 =>북마크 설정
+=>자바스크립트 라이브러리를 사용
+
+<!DOCTYPE html>
+<html class="no-js" lang="ko">
+      =============
+      *****
+      modernizr라는 오픈소스 자바스크립트 라이브러리에서
+      만약에 현재 브라우저가 자바스크립트를 지원안해주면
+      지원을 해주라는 옵션 ex) class="no-js" =>class="js"
+                               변경해주는 기능
+      *****
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>슬라이드 쇼 연습</title>
+<link rel="stylesheet" href="./css/normalize.css">
+<link rel="stylesheet" href="./css/main.css">
+<script src="./js/vendor/modernizr.custom.min.js"></script>
+<script src="./js/vendor/jquery-1.10.2.min.js"></script>
+<script src="./js/vendor/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="./js/main.js"></script>
+
+
+
+===============================================
+
+
+

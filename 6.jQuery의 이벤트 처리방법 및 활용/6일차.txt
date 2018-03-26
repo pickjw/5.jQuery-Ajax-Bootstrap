@@ -1,0 +1,193 @@
+6.jQuery의 이벤트 처리방법 및 활용
+-----------------------------------
+ 1.상단부분=>슬라이드 쇼
+ 2.본문부분=>탭메뉴 선택  =>bootsrap(Template)
+
+ main.css
+
+.slideshow{
+   overflow:hidden; /* 이미지를 감출목적(width,height 지정한 외에 영역감추기) */
+   position:relative; /* 특정한 슬라이드 기준->나열 */
+   min-width:960px; /* 최소 넓이 */
+   height:465px;
+ }
+ 
+ /* div영역에 있는 이미지 설정 */
+ .slideshow  img{
+     display:none;/* 첫장 슬라이드 제외한 나머지 이미지는 안보이게 설정*/
+     position:absolute; /* 첫 슬라이드(relatvie),absolte(마지막 슬라이드) */
+     left:50%; /* 중앙 위치(오른쪽으로 이동) */
+     margin-left:-800px;/* 여백(왼쪽->오른쪽 이동) */
+ }
+
+$(function () {
+
+    /*
+     * Slideshow영역에 반복적으로 존재하는 이미지 4개를 읽어들여서 설정
+     */
+	$('.slideshow').each(function(){
+		//var 변수명=값,변수명2=값2,,,
+		var $slides=$(this).find('img'), //모든 슬라이드(이미지 배열)
+		      slideCount=$slides.length,   //슬라이드 갯수(현재 4장)
+		      currentIndex=0;                 //현재 슬라이드를 나타내는 인덱스번호
+		
+		  //첫번째 슬라이드에 페이드인으로 표시->$(선택자).fadeIn() 서서히 나옴
+		  $slides.eq(currentIndex).fadeIn();
+		  //화면에 보여주는 이미지 7500밀리초마다 새로운 슬라이드를 화면에 출력
+		  //7.5초마다 반복해서 슬라이드를 변경해서 화면에 출력
+		  setInterval(showNextSlide,7500)
+		  //인덱스 번호에 따라서 새로운 슬라이드를 보여주는 함수(반복적으로 코딩)
+		  function showNextSlide(){
+			  //다음 표시할 슬라이드의 인덱스번호필요
+			  var nextIndex=(currentIndex+1)%slideCount;//(0+1)%4=1
+			  alert(nextIndex)//0->1->2->3
+			  //현재 슬라이드 페이드 아웃->서서히 사라진다.->fadeOut()
+			  $slides.eq(currentIndex).fadeOut();
+			  //다음 슬라이드를 페이드 인->서서히 나타나게 설정
+			  $slides.eq(nextIndex).fadeIn();
+			  //현재 슬라이드 인덱스 번호를 업데이트 해야 한다.
+			  currentIndex=nextIndex; //0<-1
+		  }
+	})
+});
+
+====================================================
+ 슬라이드 쇼
+
+1.내비게이션 기능-> <    > 구현(링크문자열)->이미지 부착
+2.인디케이터 기능-> 슬라이드 바로 밑에
+                     0 0 0 0  =>클릭=>해당 슬라이드로 이동
+
+3.자동 재생 기능->일정한 시간이 되면 자동으로 다른 이미지로
+                   변동->setInterval->확대
+
+** 4.일시 정지 기능=>mouseover(경계선에 걸치는 느낌) /mouseout(경계선에서살짝나오는느낌)
+                    ->mouseenter(mouseover보다 더 깊게)	/mouseleave (완전히벗어남)
+*** index.html ***
+
+
+<div class="slideshow">
+    <div class="slideshow-slides">
+       <a href="./" class="slide"  id="slide-1">
+        <img src="./img/slide-1.jpg" alt="" width="1600" height="465">
+       </a>
+        <a href="./" class="slide"  id="slide-2">
+        <img src="./img/slide-2.jpg" alt="" width="1600" height="465">
+       </a>
+       <a href="./" class="slide"  id="slide-3">
+        <img src="./img/slide-3.jpg" alt="" width="1600" height="465">
+       </a>
+       <a href="./" class="slide"  id="slide-4">
+        <img src="./img/slide-4.jpg" alt="" width="1600" height="465">
+       </a>
+     </div>
+     <!-- 추가 -->
+     <div class="slideshow-nav">
+           <a href="#" class="prev">Prev</a>
+           <a href="#" class="next">Next</a>
+     </div>
+     <div class="slideshow-indicator"></div>
+========================================================
+main.css
+
+.slideshow {
+    background-color: rgb(0, 0, 0); /* 배경 색상 */
+    height: 465px;
+    min-width: 960px;
+    overflow: hidden;
+    position: relative;
+}
+
+.slideshow-slides {
+    height: 100%;
+    position: absolute;/* 4장 이미지가 겹쳐있는 상태 */
+    width: 100%;   /* left는 JavaScript로 지정 ->main.js */
+} 
+
+.slideshow-slides .slide {
+    height: 100%;
+    overflow: hidden;  /* 영역을 벗어난 경우는 안보이게 설정*/
+    position: absolute; /* 이미지 겹쳐있는 상태 */
+    width: 100%;   /* left는 JavaScript로 지정 */
+}  
+
+.slideshow-slides .slide img {
+    left: 50%; /* 슬라이드의 정중앙에 배치 */
+    margin-left: -800px;
+    position: absolute;
+}
+
+.slideshow-nav a,       /*클릭 후*/
+.slideshow-indicator a {  /* main.js에서 <a href=~ */
+    background-color: rgba(0, 0, 0, 0); /* for IE9 */
+    overflow: hidden; /* 슬라이드 이동시 화면에 안보이게 설정*/
+}
+
+.slideshow-nav a:before,  /* 클릭 전 */
+.slideshow-indicator a:before { /* 인디케이터 누르기전 */
+    content: url(../img/sprites.png);
+    display: inline-block; /* <  ,>  나란히 정렬 */
+    font-size: 0;
+    line-height: 0;
+}
+
+.slideshow-nav a {  /* 링크문자열의 위치와 크기 지정 */
+    position: absolute;/* 링크문자열도 겹치게 설정 */
+    top: 50%;
+    left: 50%;
+    width: 72px;
+    height: 72px;
+    margin-top: -36px;
+}
+.slideshow-nav a.prev {  /* < 누른후 이동한 위치 */
+    margin-left: -480px;
+}
+.slideshow-nav a.prev:before { /* < 누르기 전 이동 위치*/
+    margin-top: -20px;    
+}
+.slideshow-nav a.next { /* > 누른 후 이동 위치 */
+    margin-left: 408px;
+}
+.slideshow-nav a.next:before { /* > 누르기 전 이동 위치*/
+    margin-left: -80px;
+    margin-top: -20px;
+}
+.slideshow-nav a.disabled { /* a 비활성화->화면에 안보이게*/
+    display: none;
+}
+
+.slideshow-indicator { /* 인디케이트의 스타일 설정*/
+    bottom: 30px; /* 이미지의 바닥으로부터 30px 떨어진 위치 */
+    height: 16px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    text-align: center; /* 가운데 위치 */
+}
+.slideshow-indicator a {
+    display: inline-block; /* a링크 문자열 가로로 정렬 */
+    width: 16px;
+    height: 16px;
+    margin-left: 3px; /* 인디케이터끼리의 여백 */
+    margin-right: 3px;
+}
+.slideshow-indicator a.active { /* 마우스 포인터 지정(기본) */
+    cursor: default;
+}
+.slideshow-indicator a:before {
+    margin-left: -110px;
+}
+.slideshow-indicator a.active:before { /* 링크문자열 활성화 전의 스타일 */
+    margin-left: -130px;
+}
+
+=================================================
+ main.js에서 구현
+
+   이징종류 사이트 
+  ** http://superkts.com/jquery/@easingEffects **
+
+
+
+                   =>mouseout(경계선에 살짝 나오는 느낌)
+                   =>mouseleave(경계선에서 완전히 벗어나는경우)

@@ -1,0 +1,192 @@
+1.Ajax의 개요및 작성법,jQuery의 소개
+
+  화면구현 1->html5,css3,
+                         javascript(java 4~5일차 제어문)
+                         javascript(jsp 1~5일차)기초
+              ==========
+
+  화면구현 2->html5,css3,javascript=>jQuery(jQuery Mobile)->3/3~7일
+                                   =>jQuery Ajax(DB) 추가
+                                            ====
+   <script type="text/javascript">
+(function($){
+ $(window).load(function(){
+	$.ajax({
+	  url : "/member/updateTimeStamp.laf", //요청문서)
+	  type : "post", //요청방식
+				//data : {mallGb:"KOR"},
+	   datatype : "json", //요청받은 문서의 종류
+            //콜백함수
+	   success : function(result, status){
+				},
+            //요청결과를 못받았을때 호출하는 함수지정
+	   error : function(xhr, status, error){
+				}
+			});
+	});
+})(jQuery);
+</script>
+===================================================================
+
+  Spring(3주)
+  Angular2~ ,React=>3주
+  cordovar(모바일)->환경설정만->jQuery Mobile
+
+  jQueryTest=>프로젝트명
+       |
+        -0.ajax=>ajax개요예제=>중복id 체크(순수 ajax)
+                             =>jQuery의 ajax를 이용
+         1.selector
+========================
+**Ajax의 개요**
+
+Ajax
+
+Asynchronous Javascript and XML
+  비동기
+
+기존 방식(모델1,모델2)
+
+웹 브라우저가 서버에 Request 전송
+서버는 Request를 처리하여 Response를 사용자에게 전송
+웹 브라우저가 Response 내용을 표시
+
+ www.jquery.com
+
+*****Ajax의 구성요소 및 기능들*****
+
+1.XMLHttpRequest =>브라우저에서 생성->제공
+      (XHR)객체    웹 서버와의 통신 담당
+
+2.DOM(Document Object Model)=>요청결과를 화면출력
+                               문서 구조 담당
+   =>순수 자바스크립트코드 작성=>www.w3schools.com
+   =>jQuery를 사용
+
+3.CSS
+      글자색, 배경색 등의 UI 담당
+
+4.자바스크립트=>함수,함수호출,이벤트를 연결
+                사용자의 동작 감지, XMLHttpRequest와 DOM,
+                CSS 사이의 중개
+---------------------------------------------------------------
+
+*****Ajax Programminbg이 기존 방식(모델1,모델2)과 차이점*****
+
+1.웹 브라우저가 아닌 ===>웹서버에 직접적으로 요청X
+     XMLHttpRequest(XHR) 객체가 웹서버와 통신(중간에 중재)
+----------------------------------------
+
+2.웹 서버의 응답 결과가 HTML(text/html)이 아닌
+   단순 텍스트(text) 또는 XML  형태로 보내준다==>json파일도 출력
+
+3.*** 페이지 이동 없이 결과 표시***(내가 원하는 위치에 출력가능)
+==================================================================
+
+ Client-Side Programming(입장)
+
+*** Ajax 프로그래밍 순서(before) ***  =>$(.ajax)함수 이용(after)
+
+Step 1 : XMLHttpRequest(XHR) 객체 구하기->브라우저가 제공
+Step 2 : 웹 서버에 요청 전송하기
+Step 3 : 웹 서버의 응답을 화면에 반영하기(XHR)->DOM
+=================================================================
+
+Step 1 : XMLHttpRequest(XHR) 객체 구하기
+  ->domAjax.html->html->xhtml=>xml+html=>xml성격을 가진 html문서양식
+                                        (사용자정의 태그작성)
+
+simple.txt의 응답 텍스트
+파일형식->utf-8  ===========>한글이 깨지지 않는다.
+==================
+simple2.txt의 응답 텍스트
+파일형식->ansi   =============>한글이 깨진다는 사실(ansi로 저장했기때문)
+===================
+결론) jsp파일은 ansi로 저장했더라도 charset=utf-8 또는 charset=euc-kr이면
+      한글깨지지 않는다.
+
+<%@ page contentType="text/plain; charset=utf-8" %>
+simple.jsp의 응답 텍스트
+
+text/plain=>문자열 위주  =>text/html=>문자열도 나오지만 주로 html태그
+===================================
+파일형식->utf-8
+==================================
+<%@ page contentType="text/plain; charset=euc-kr" %>
+simple2.jsp의 응답 텍스트
+
+파일형식->ansi
+==================================
+
+              //alert(httpRequest)
+    	 //2.xhr객체->준비작업(콜백함수)->서버요청
+    	 **콜백함수->특별한 조건이 만족하면 자동적으로 실행이 되는 함수
+    	 //2.xhr객체명.onreadystatechange=콜백함수; //() X ->함수이름만 쓸것
+    	 httpRequest.onreadystatechange=viewMessage;
+    	 //3.xhr객체명.open
+    	 //(1.요청방식(get or post),2.요청문서(url) 3.처리방식(비동기(true) or 동기))
+    	  **비동기 방식->채팅,메일보내기(상대방이 결과를 보내주는것와 상관없이
+    			 //                                   다른일을 할 수 있는 방식
+    	 httpRequest.open("GET",url,true);
+    	 //4.xhr객체.send(null or 매개변수)
+    	 httpRequest.send(null);//요청
+----------------------------------------------------------
+html문서->xhtml문서(html문서에 xml성격이 가미된 문서)
+  text     xml
+============================================================
+ 회원관리->Ajax를 적용
+
+ 1.클라이언트======>직접 서버에게 요청X
+             xhr객체생성->요청
+
+  script.js에서 서버에 요청하는 구문을 주석처리
+
+/*//중복ID체크 해주는 자바스크립트함수 선언
+function idCheck(id){ //mem_id.value
+   if(id==""){
+	   alert("아이디를 먼저 입력하세요")
+	   document.regForm.mem_id.focus()//document.폼객체명.입력양식.함수명(~)
+   }else{ //IdCheck.jsp?매개변수명=전달할값->IdCheck.jsp->checkId(id)
+	   //IdCheck.jsp를 요청->매개변수를 전달하는 이유->DB에 접근=>id확인
+	   url="IdCheck.jsp?mem_id="+id
+	   window.open(url,"post","left=450,top=150,width=300,height=150")
+   }
+}*/
+
+=======================>searchWord.js를 작성->Register.jsp에서 불러오기
+                         html->xhtml문서형성  (html문서+지시어)
+                                               xhtml문서+지시어=>Register2.jsp
+ 2.xhr객체=>요청 ->백업 Register2.jsp작성(save as)
+
+  ** xhtml이 적용이된 jsp파일을 하나 생성 **
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+ 이 부문이 선언된 jsp파일->xhtml문서를 지원해주는 jsp파일임을 알려주는 선언문
+-----------------------------------------------------------------------------
+   www.w3schools.com or ppt 참조
+   =============================
+
+ 3.콜백함수를 지정->내 클라이언트 문서 특정위치에 출력->DOM,CSS,HTML5,,,
+=======================================================================
+
+
+Register.jsp(html+jsp의 선언문이 추가)->Register2.jsp(save as) 백업
+
+                 xhtml+jsp
+
+  jQuery or Ajax->태그(앨리먼트)->id위주로 추가사용 name
+
+IdCheck.jsp->save as IdChcek2.jsp(백업)
+======================================
+1.prototype.js=>document.getElementById('~')->$('')
+
+->Ajax전용 자바스크립트파일 하나 작성->searchWord.js
+
+
+
+

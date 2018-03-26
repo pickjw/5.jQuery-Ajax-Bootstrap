@@ -1,0 +1,234 @@
+7JQuery의 Ajax의 개요및 작성법
+
+ =>1)실시간 검색어를 구현하는 방법=>$.ajax() 이용=>DB연동(jsp)
+   2)이미지 갤러리를 구현하는 방법=>$.getJSON() 이용
+                                      ->** json 파일 **
+     =>Ajax계통의 함수 정리
+      =====================
+
+ 서버언어(jsp,php,c#(asp)대세==>클라이언트 언어(jQuery),
+         자바(DB연동)->JDBC       단독으로 DB연동기술
+
+    0.Ajax->jQuery사용X==>순수 Ajax
+    5.Ajax
+      |
+       -01.Ajax().html생성=>jQuery사용
+------------------------------------------------------
+    4.advance
+         |
+          -04
+             autoid.css
+             autoid.html->$.ajax함수를 이용
+             autoid.jsp(요청문서)
+
+
+$(function(){ 
+	  //검색입력하기전에 처음에는 목록이 X
+	  $('.listbox').hide()//<->show()
+	  $('.userid').keyup(function(){ //검색어를 입력
+		  var uid=$('.userid').val()
+		  //alert(uid)
+		  //autoid.jsp?userid='자'
+		  var d='userid='+uid	
+		  $.ajax({
+			   type:'post',  //type:get | post 전송방식을 지정하고자 할때
+			   url:'autoid.jsp', //url:'요청문서(.xml, .json~)'
+			   data:d,//data:{매개변수:값}
+			   success:function(html){//<li>testkim</li>
+				   $('.listbox').show()//스타일 적용시킬 목록을 화면에 출력
+				   $('.namelist').html(html)
+				   //하이라이트 효과
+				   $('li').hover(function(){ //hover클래스->cyan, blue
+					   $(this).addClass('hover')
+				   },function(){
+					   $(this).removeClass('hover')
+				   })
+				   //실시간으로 나오는 항목을 클릭->등록
+				   $('li').click(function(){
+					   $('.userid').val($(this).text()) //목록선택->li태그의 문자열
+					   $('.listbox').hide()//목록창 감추기
+				   })
+			   }//success
+		  })//$.ajax
+		  return false;//전송X
+	  })
+=======================================================
+  주제 발표 ->실시간의 데이터를 화면에 출력->DB연동
+
+1.우편번호 검색->실시간으로 검색->컴퓨터 다운(45000)
+               =>5만건->Ajax(단점)=>속도가 느리다
+               =>파일로 저장해서 불러오기(.json,.xml)
+               =>우체국 사이트->우편번호->파일로 제공
+               =>회원테이블의 회원id
+               =>게시판의 writer->작성자
+
+
+//실시간으로 웹상에서 요청할 게시판의 작성자를 검색
+    public ArrayList<String> getArticleWriter(String name){
+    	
+    	Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;// select * from board where num=?
+		ArrayList<String> nameList=new ArrayList();
+		
+		// 2.메서드 목적에 맞는 SQL구문
+		try {
+			con = pool.getConnection();
+			String sql="select writer from board where  writer like '%"+name+"%'";
+			pstmt=con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) { // 레코드갯수가 한개라도 존재한다면
+				String writer=rs.getString("writer");
+				nameList.add(writer);
+			} 
+		} catch (Exception e) {
+			System.out.println("getArticleWriter() 메서드 실행오류=>" + e);
+		} finally {// 메모리해제
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return nameList;
+    }
+    
+===========================================================
+autoid.jsp파일의 내용
+
+<%
+   request.setCharacterEncoding("utf-8");
+   String userid=request.getParameter("userid");
+   System.out.println("userid=>"+userid);
+   //DB연동->그 결과물->ArrayList
+   BoardDAO dbPro=new BoardDAO();
+   ArrayList<String> name=dbPro.getArticleWriter(userid);
+   //검색된 갯수만큼 li태그에 저장->전송(out.println()로 전송)
+   for(int i=0;i<name.size();i++){
+	   String sname=name.get(i);
+	   out.println("<li>"+sname+"</li>");
+   }
+========================================================
+  =>이미지를 불러오기=>json파일=>$.getJSON()
+
+ ** JSON 표기법 **
+
+JSON 공식 사이트(http://www.json.org)에서의 JSON 설명
+ 
+ ** 개요 **
+   “JSON(JavaScript Object Notation)는 경량의 데이터 교환 포맷이다.
+          ===========================   =======================
+   네트워크 기반->파일로 저장-->전송->입력->처리(C/S환경)
+                  text-->xml 파일--->json 파일
+
+                         (트리구조)->1.복잡(구조)->json 파일(구조 단순
+                                     2.스프링(xml파일 절대적)   
+            text)
+
+    **xml문서-->웹어플리케이션 환경설정 할때 사용
+    ** 테이블에 저장-->대용(json형태로 파일로 저장)-->작업
+ ---------------------------------------------------------
+
+ 구조형식
+
+[
+    {
+         키명(필드명):저장할값(문자열,숫자,논리적인값) or 객체형태
+        "title": "A Day in the Life",
+        "images": {
+            "thumb": "img/thumb-1-1.jpg",
+            "large": "img/large-1-1.jpg"
+        } //객체 {} =>빈객체
+    },
+    ======================>하나의 레코드 영역(컴퓨터 입장->좋은구조)
+    {
+        "title": "A Hard Day’s Night",
+        "images": {
+            "thumb": "img/thumb-1-2.jpg",
+            "large": "img/large-1-2.jpg"
+     }
+    ,,,
+]
+
+  [] ==>데이터가 없는 표시
+
+
+   인간에게 있어서 읽고 쓰기가 용이하고, 기계에 있어서도 간단하게 파싱이나 생성을 행할 수 있는 형식이다.
+   JavaScript 프로그램 언어(ECMA-262 표준 제 3판 1999년 12월)의 일부를 베이스로 만들어져 있다.
+   JSON(은)는 완전하게 언어로부터 독립한 텍스트 형식이지만, 
+   C,C++,C#,Java,JavaScript,Perl,Python, 그 외 많은 C패밀리의 언어를 사용하는프로그래머에게 있어서는, 
+   친숙한규약이 사용되고 있다.이러한 성질이,JSON를 이상적인 데이터 교환 언어로 하고 있다.”
+ 
+ 
+ 
+- JSON 관련 사이트에서 JSON 설명
+ 
+  ** 특징** 
+                           1)
+   “영어 그대로 해석하자면 자바스트립트를 객체형식으로 표현하는 것이다.
+                            =======================================
+    2)
+    JSON은 XML보다 빠르고 변환하기도 쉬워 많이 대체해서 쓰고 있다.
+     ============================================================
+    3)
+    적은양의 데이터가 송수신 되므로 모바일쪽에서 쓰기에도 부담이 적다.”
+    ==================================================================
+    4)
+   “JSON은 이종 시스템간 데이터 교환시에 사용할 수 있는 이상적인 방법이다.
+    ============================================================= 
+   JSON은 자바스크립트에 기반하고 있기 때문에 모든 웹 브라우저에서 호환 된다고 할 수 있다.”
+
+    5.ajax
+      02.json.html(개념)
+      03.getJSON().html
+
+ [
+  {
+   "id":"1",
+   "name":"레몬",
+   "price":"3000",
+   "description":"피로회복에 좋고 비타민C 풍부"
+  },
+  {"id":"2",
+   "name":"키위",
+   "price":"2000",
+   "description":"비타민C 풍부,다이어트와 미용"},
+   
+  {"id":"3",
+   "name":"블루베리",
+   "price":"5000",
+   "description":"안토시아니은 눈피로에 좋다"}
+]
+==================================================================
+         =>이미지 갤러리 불러오는 프로젝트
+           ===============================
+
+** 1.Masonry 라이브러리 **
+
+그리드 형태의 유연한 레이아웃을 
+구현하는데 사용하는 자바스크립트
+라이브러리
+
+가로와 세로의 크기가 다른 블록을
+콘텐츠 영역에 딱 맞게 배치할 수가
+있으므로 빈틈없이 화면배치 및 
+정렬을 할 수 가 있다.
+
+** 2.ImageLoaded 라이브러리 **
+
+이미지 로딩을 모니터링하는
+자바스크립트 라이브러리
+
+한번에 여러 개의 이미지를
+보여줄때 이미지 로딩이
+완료되기 전에 자바스크립트
+코드가 실행되면, 로딩중인
+이미지가 보이지 않거나
+이미지크기를 얻지못해서
+그리드 레이아웃 구성에
+문제가 발생이 된다.
+=>이때 사용하는 라이브러리
+
+==========================================
+
+
+
+
+
+
